@@ -150,7 +150,7 @@ src/
 ## Evaluation Criteria
 
 - Correct implementation of API calls (GET, PUT)
-- Proper state management (loading, error, data)
+- Proper state management (loading, error, data) 🔥
 - Code quality and organization 🔥
 - User experience (loading states, error handling)
 - TypeScript usage and type safety 🔥
@@ -160,9 +160,9 @@ src/
 
 Once completed, make sure your code:
 
-- Compiles without errors
-- Follows the existing code structure
-- Handles all edge cases (loading, errors, empty states)
-- Is ready for review
+- Compiles without errors 🔥
+- Follows the existing code structure 🔥
+- Handles all edge cases (loading, errors, empty states) 
+- Is ready for review 
 
 Good luck!
