@@ -56,6 +56,7 @@ You will need to determine the correct endpoints for:
 
 - GET assets: `/api/assets` (example)
 - PUT asset: `/api/assets/:id` (example)
+- Search in `http://testback.tgdcompany.com/swagger-ui/index.html#/equipment-controller` (API)
 
 ## Project Structure
 
