@@ -11,7 +11,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
+  CircularProgress,
+  Alert
 } from "@mui/material";
+import type { UpdateAssetDto } from "../types/assetTypes";
+import { updateAsset } from "../services/assetService";
+import { useState } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,59 +40,90 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const AssetsTable = () => {
   const { data, isLoading, error } = useAssetsData();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // TODO: Handle loading state
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   // TODO: Handle error state
+  if (error) {
+    return <Alert severity="error">{error.message}</Alert>;
+  }
 
   // TODO: Implement handleUpdate function for PUT request
-  const handleUpdate = async (id: string, asset: any) => {
+  const handleUpdate = async (asset: UpdateAssetDto) => {
     // Use updateAsset service
+    try {
+      await updateAsset(asset);
+      console.log("Asset updated successfully");
+    } catch (err) {
+      console.error("Error updating asset:", err);
+    }
   };
 
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedData = data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="assets table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>ID</StyledTableCell>
-            <StyledTableCell>Name</StyledTableCell>
-            {/* Add more columns as needed */}
-            <StyledTableCell align="right">Actions</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <StyledTableRow key={row.id}>
-              <StyledTableCell component="th" scope="row">
-                {row.id}
-              </StyledTableCell>
-              <StyledTableCell>{row.name}</StyledTableCell>
-              {/* Add more cells as needed */}
-              <StyledTableCell align="right">
-                <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-                  {/* TODO: Add button for PUT action */}
-                  {/* Example: */}
-                </Box>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-          {/* Example row, remove it after implementation */}
-          <StyledTableRow>
-            <StyledTableCell component="th" scope="row">
-              1
-            </StyledTableCell>
-            <StyledTableCell>Asset 1</StyledTableCell>
-            <StyledTableCell align="right">
-              <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-                <Button variant="outlined">
-                  Update
-                </Button>
-              </Box>
-            </StyledTableCell>
-          </StyledTableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Paper>
+      <TableContainer>
+        <Table sx={{ minWidth: 650 }} aria-label="assets table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>ID</StyledTableCell>
+              <StyledTableCell>Equipment</StyledTableCell>
+              <StyledTableCell>Sector</StyledTableCell>
+              {/* Add more columns as needed */}
+              <StyledTableCell align="right">Actions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedData.map((row) => (
+              <StyledTableRow key={row.id}>
+                <StyledTableCell component="th" scope="row">
+                  {row.id}
+                </StyledTableCell>
+                <StyledTableCell>{row.equipment}</StyledTableCell>
+                <StyledTableCell>{row.sector}</StyledTableCell>
+                {/* Add more cells as needed */}
+                <StyledTableCell align="right">
+                  <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+                    {/* TODO: Add button for PUT action */}
+                    <Button variant="outlined" onClick={() => handleUpdate(row)}>
+                      Update
+                    </Button>
+                  </Box>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
   );
 };
 
