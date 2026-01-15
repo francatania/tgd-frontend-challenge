@@ -123,8 +123,8 @@ const AssetsTable = () => {
 
   return (
     <Paper>
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="assets table">
+      <TableContainer sx={{ maxHeight: 700, minHeight: 700 }}>
+        <Table sx={{ minWidth: 650 }} stickyHeader aria-label="assets table">
           <TableHead>
             <TableRow>
               <StyledTableCell>ID</StyledTableCell>
