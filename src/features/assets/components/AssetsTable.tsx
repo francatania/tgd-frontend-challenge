@@ -124,16 +124,6 @@ const AssetsTable = () => {
   return (
     <Paper>
       <TableContainer>
-        <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
         <Table sx={{ minWidth: 650 }} aria-label="assets table">
           <TableHead>
             <TableRow>
@@ -148,7 +138,13 @@ const AssetsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.map((row) => {
+            {paginatedData.length === 0 ? (
+              <TableRow>
+                <StyledTableCell colSpan={8} align="center">
+                  No assets found
+                </StyledTableCell>
+              </TableRow>
+            ) : paginatedData.map((row) => {
               const isEditing = editingRowId === row.id;
               const currentRow = isEditing && editedRow ? editedRow : row;
 
@@ -247,18 +243,27 @@ const AssetsTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      {!editingRowId &&       
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        component="div"
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />}
-
-      
+      {!editingRowId && (
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      )}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 };
